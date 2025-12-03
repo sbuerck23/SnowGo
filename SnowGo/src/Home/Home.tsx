@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import snowGoLogo from "../../public/snowGoLogo.png";
+import snowGoLogo from "../assets/snowGoLogo.png";
 import "./Home.css";
 
 function Home() {
