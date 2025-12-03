@@ -1,0 +1,22 @@
+:root {
+  --primary-color: #536ee4;
+  --secondary-color: #9f9f9f;
+  --gradient-primary: linear-gradient(135deg, #536ee4 0%, #9f9f9f 100%);
+
+  --text-dark: #333;
+  --text-gray: #666;
+  --text-light: #999;
+  --bg-light: #f8f9fa;
+  --bg-white: #ffffff;
+
+  --error-light: #fee;
+  --error-dark: #c33;
+  --success-light: #efe;
+  --success-dark: #3a3;
+
+  --border-color: #e0e0e0;
+  --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8px 20px rgba(102, 126, 234, 0.15);
+  --shadow-lg: 0 12px 30px rgba(102, 126, 234, 0.15);
+  --shadow-xl: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
