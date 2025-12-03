@@ -19,11 +19,10 @@ function Login() {
     const password = formData.get("password") as string;
 
     try {
-      const { data, error: signInError } =
-        await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
       if (signInError) throw signInError;
 

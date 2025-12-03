@@ -1,0 +1,121 @@
+.booking-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.booking-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.booking-header h1 {
+  font-size: 2.5rem;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+.booking-header p {
+  font-size: 1.1rem;
+  color: var(--text-gray);
+}
+
+.booking-form {
+  background: var(--bg-light);
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: var(--shadow-md);
+}
+
+.form-section {
+  margin-bottom: 30px;
+}
+
+.form-section h2 {
+  font-size: 1.3rem;
+  color: var(--text-dark);
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-dark);
+  font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(83, 110, 228, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .booking-form {
+    padding: 20px;
+  }
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  color: var(--bg-white);
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-color-dark);
+}

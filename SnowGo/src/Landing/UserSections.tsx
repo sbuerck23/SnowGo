@@ -35,7 +35,7 @@ function UserSections() {
             </div>
             <button
               className="btn btn-primary"
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate("/booking")}
             >
               Book a Shoveler
             </button>

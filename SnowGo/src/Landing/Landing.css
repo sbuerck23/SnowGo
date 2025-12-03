@@ -21,6 +21,18 @@
   color: white;
 }
 
+.navbar-content {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.greeting {
+  color: var(--primary-color-dark);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
 .logout-btn {
   padding: 0.6rem 1.2rem;
   background: var(--primary-color);
