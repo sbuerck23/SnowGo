@@ -4,9 +4,13 @@ import { supabase } from "../supabaseClient";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  requireAuth?: boolean;
 }
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function ProtectedRoute({
+  children,
+  requireAuth = true,
+}: ProtectedRouteProps) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -30,7 +34,12 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     return <div>Loading...</div>;
   }
 
-  // Redirect to login if not authenticated
+  // If requireAuth is false, allow unauthenticated access
+  if (!requireAuth) {
+    return children;
+  }
+
+  // If requireAuth is true, redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }

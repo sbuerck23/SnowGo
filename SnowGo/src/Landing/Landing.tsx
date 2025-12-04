@@ -1,28 +1,36 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import HeroSection from "./HeroSection";
-import UserSections from "./UserSections";
-import HowItWorks from "./HowItWorks";
-import ReviewsSection from "./ReviewsSection";
-import ServiceAreas from "./ServiceAreas";
-import StatsSection from "./StatsSection";
+import CustomerLanding from "./CustomerLanding/CustomerLanding";
+import ShovelerLanding from "./ShovelerLanding/ShovelerLanding";
 import "./Landing.css";
 
+type UserType = "customer" | "shoveler" | null;
+
 function Landing() {
-  const navigate = useNavigate();
   const [username, setUsername] = useState<string>("");
+  const [userType, setUserType] = useState<UserType>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getUserData = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-      if (user) {
-        // Get username from user metadata
-        const name = user.user_metadata?.full_name;
-        setUsername(name);
+        if (user) {
+          // Get username from user metadata
+          const name = user.user_metadata?.full_name;
+          setUsername(name);
+
+          // Get user type from auth metadata
+          const type = user.user_metadata?.user_type as UserType;
+          setUserType(type);
+        }
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -31,28 +39,25 @@ function Landing() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate("/login");
   };
 
-  return (
-    <div className="landing-container">
-      <nav className="landing-navbar">
-        <div className="navbar-brand">SnowGo</div>
-        <div className="navbar-content">
-          <span className="greeting">Hi {username}!</span>
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
-      </nav>
-      <HeroSection />
-      <UserSections />
-      <HowItWorks />
-      <ReviewsSection />
-      <ServiceAreas />
-      <StatsSection />
-    </div>
-  );
+  if (loading) {
+    return (
+      <div className="landing-container">
+        <div className="loading">Loading...</div>
+      </div>
+    );
+  }
+
+  // Customer Landing Page
+  if (userType === "customer") {
+    return <CustomerLanding username={username} onLogout={handleLogout} />;
+  }
+
+  // Shoveler Landing Page
+  if (userType === "shoveler") {
+    return <ShovelerLanding username={username} onLogout={handleLogout} />;
+  }
 }
 
 export default Landing;

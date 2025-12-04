@@ -42,7 +42,7 @@ function Register() {
     }
 
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -55,11 +55,10 @@ function Register() {
       if (signUpError) throw signUpError;
 
       setSuccess(true);
-      console.log("User registered successfully:", data);
 
-      // Redirect to login after 2 seconds
+      // Redirect to user type selection after 2 seconds
       setTimeout(() => {
-        navigate("/login");
+        navigate("/usertype");
       }, 2000);
     } catch (err) {
       const errorMessage =
@@ -81,7 +80,7 @@ function Register() {
         {error && <div className="error-message">{error}</div>}
         {success && (
           <div className="success-message">
-            ✓ Account created! Redirecting to login...
+            ✓ Account created! Redirecting to user type selection...
           </div>
         )}
 

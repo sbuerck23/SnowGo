@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 import "./Booking.css";
 
 function Booking() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     address: "",
     city: "",
@@ -11,6 +14,9 @@ function Booking() {
     drivewaySize: "small",
     additionalNotes: "",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -28,20 +34,89 @@ function Booking() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Booking request:", formData);
-    // TODO: Handle booking submission to backend
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Get current user
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        setError("Please log in to book a shoveler");
+        navigate("/login");
+        return;
+      }
+
+      // Insert booking into database
+      const { error: insertError } = await supabase.from("bookings").insert([
+        {
+          user_id: user.id,
+          address: formData.address,
+          city: formData.city,
+          zip_code: formData.zipCode,
+          preferred_date: formData.date,
+          preferred_time: formData.time,
+          driveway_size: formData.drivewaySize,
+          additional_notes: formData.additionalNotes,
+          status: "pending",
+        },
+      ]);
+
+      if (insertError) {
+        setError("Failed to create booking. Please try again.");
+        console.error(insertError);
+        return;
+      }
+
+      setSuccess(true);
+      // Reset form
+      setFormData({
+        address: "",
+        city: "",
+        zipCode: "",
+        date: "",
+        time: "",
+        drivewaySize: "small",
+        additionalNotes: "",
+      });
+
+      // Redirect after 2 seconds
+      setTimeout(() => {
+        navigate("/landing");
+      }, 2000);
+    } catch (err) {
+      setError("An unexpected error occurred");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="booking-container">
       <div className="booking-header">
-        <h1>Book a Shoveler</h1>
-        <p>Get your driveway cleared quickly and easily</p>
+        <button className="back-button" onClick={() => navigate(-1)}>
+          ← Back
+        </button>
+        <div className="booking-header-text">
+          <h1>Book a Shoveler</h1>
+          <p>Get your driveway cleared quickly and easily</p>
+        </div>
       </div>
 
       <form className="booking-form" onSubmit={handleSubmit}>
+        {error && <div className="error-message">{error}</div>}
+        {success && (
+          <div className="success-message">
+            Booking created successfully! Redirecting...
+          </div>
+        )}
+
         <div className="form-section">
           <h2>Service Location</h2>
 
@@ -147,8 +222,8 @@ function Booking() {
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          Request a Shoveler
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? "Submitting..." : "Request a Shoveler"}
         </button>
       </form>
     </div>

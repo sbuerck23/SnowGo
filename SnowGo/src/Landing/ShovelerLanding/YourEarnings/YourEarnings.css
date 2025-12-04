@@ -1,0 +1,159 @@
+.earnings-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.earnings-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
+  color: #333;
+  text-align: center;
+}
+
+.earnings-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  border-left: 4px solid #2c7be5;
+}
+
+.summary-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  color: #666;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.total-amount,
+.job-count,
+.pending-count {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c7be5;
+}
+
+.earnings-list h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.earnings-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.earnings-table thead {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.earnings-table th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.earnings-table td {
+  padding: 16px;
+  border-bottom: 1px solid #dee2e6;
+  color: #555;
+}
+
+.earnings-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.amount {
+  font-weight: 600;
+  color: #28a745;
+  font-size: 1.05rem;
+}
+
+.transaction-id {
+  font-family: "Courier New", monospace;
+  font-size: 0.85rem;
+  color: #999;
+}
+
+.status {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status.warning {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status.danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status.info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.no-earnings {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  padding: 60px 40px;
+  background-color: #f5f5f5;
+  border-radius: 12px;
+}
+
+.error {
+  color: #dc3545;
+  padding: 20px;
+  background-color: #f8d7da;
+  border-radius: 8px;
+  border: 1px solid #f5c6cb;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .earnings-table {
+    font-size: 0.85rem;
+  }
+
+  .earnings-table th,
+  .earnings-table td {
+    padding: 12px 8px;
+  }
+
+  .summary-card {
+    min-width: 100%;
+  }
+}
