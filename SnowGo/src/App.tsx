@@ -7,7 +7,7 @@ import UserType from "./UserType/UserType";
 import Landing from "./Landing/Landing";
 import Booking from "./Booking/Booking";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
-import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return (
