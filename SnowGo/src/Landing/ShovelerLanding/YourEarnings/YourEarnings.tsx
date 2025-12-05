@@ -19,7 +19,6 @@ function YourEarnings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalEarnings, setTotalEarnings] = useState(0);
-  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEarnings = async () => {
@@ -33,8 +32,6 @@ function YourEarnings() {
           setLoading(false);
           return;
         }
-
-        setUserId(user.id);
 
         // Fetch shoveler payments with booking details
         const { data: payments, error: paymentsError } = await supabase

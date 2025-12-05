@@ -28,7 +28,6 @@ function ShovelerLanding({ username, onLogout }: ShovelerLandingProps) {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<CurrentPage>("dashboard");
   const [acceptedJobs, setAcceptedJobs] = useState<AcceptedJob[]>([]);
-  const [loadingJobs, setLoadingJobs] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [selectedJobForCompletion, setSelectedJobForCompletion] =
     useState<AcceptedJob | null>(null);
@@ -42,7 +41,6 @@ function ShovelerLanding({ username, onLogout }: ShovelerLandingProps) {
         } = await supabase.auth.getUser();
 
         if (!user) {
-          setLoadingJobs(false);
           return;
         }
 
@@ -96,8 +94,6 @@ function ShovelerLanding({ username, onLogout }: ShovelerLandingProps) {
         setAcceptedJobs(transformed);
       } catch (err) {
         console.error("Error fetching accepted jobs:", err);
-      } finally {
-        setLoadingJobs(false);
       }
     };
 
