@@ -75,14 +75,27 @@ function AvailableJobs() {
     if (!userId) return;
 
     try {
-      const { error } = await supabase.from("job_acceptances").insert({
-        booking_id: bookingId,
-        shoveler_id: userId,
-        status: "accepted",
-      });
+      // 1. Create job acceptance record
+      const { error: acceptanceError } = await supabase
+        .from("job_acceptances")
+        .insert({
+          booking_id: bookingId,
+          shoveler_id: userId,
+          status: "accepted",
+        });
 
-      if (error) throw error;
+      if (acceptanceError) throw acceptanceError;
 
+      // 2. Update booking status from pending to accepted
+      const { error: bookingError } = await supabase
+        .from("bookings")
+        .update({ status: "accepted" })
+        .eq("id", bookingId);
+
+      if (bookingError) throw bookingError;
+
+      // Remove from available jobs list
+      setJobs((prev) => prev.filter((job) => job.id !== bookingId));
       setAcceptedJobs((prev) => new Set(prev).add(bookingId));
     } catch (err) {
       console.error("Error accepting job:", err);
