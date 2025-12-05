@@ -7,31 +7,35 @@ import UserType from "./UserType/UserType";
 import Landing from "./Landing/Landing";
 import Booking from "./Booking/Booking";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
+import { Analytics } from "@vercel/analytics/next";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Register />} />
-      <Route
-        path="/usertype"
-        element={
-          <ProtectedRoute requireAuth={false}>
-            <UserType />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/booking" element={<Booking />} />
-      <Route
-        path="/landing"
-        element={
-          <ProtectedRoute requireAuth={true}>
-            <Landing />
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Register />} />
+        <Route
+          path="/usertype"
+          element={
+            <ProtectedRoute requireAuth={false}>
+              <UserType />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/booking" element={<Booking />} />
+        <Route
+          path="/landing"
+          element={
+            <ProtectedRoute requireAuth={true}>
+              <Landing />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+      <Analytics />
+    </>
   );
 }
 

@@ -5,6 +5,7 @@ import HowItWorks from "./HowItWorks/HowItWorks";
 import ReviewsSection from "./ReviewsSection/ReviewsSection";
 import ServiceAreas from "./ServiceAreas/ServiceAreas";
 import StatsSection from "./StatsSection/StatsSection";
+import CustomerJobs from "./CustomerJobs/CustomerJobs";
 
 interface CustomerLandingProps {
   username: string;
@@ -30,6 +31,7 @@ function CustomerLanding({ username, onLogout }: CustomerLandingProps) {
           </button>
         </div>
       </nav>
+      <CustomerJobs />
       <HeroSection />
       <UserSections />
       <HowItWorks />

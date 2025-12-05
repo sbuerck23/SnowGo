@@ -16,6 +16,7 @@ interface Job {
 }
 
 function AvailableJobs() {
+  const [user, setUser] = useState<any>(null);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +36,7 @@ function AvailableJobs() {
           return;
         }
 
+        setUser(user);
         setUserId(user.id);
 
         // Fetch available bookings (pending status and not from this shoveler)
@@ -82,6 +84,7 @@ function AvailableJobs() {
           booking_id: bookingId,
           shoveler_id: userId,
           status: "accepted",
+          shoveler_name: user.user_metadata?.full_name,
         });
 
       if (acceptanceError) throw acceptanceError;
