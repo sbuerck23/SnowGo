@@ -24,12 +24,6 @@
   padding: 2rem;
   border-radius: 12px;
   box-shadow: var(--shadow-sm);
-  transition: all 0.3s ease;
-}
-
-.review-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-lg);
 }
 
 .review-header {

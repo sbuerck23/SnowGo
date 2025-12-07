@@ -108,7 +108,7 @@ function UserType() {
 
         <button
           className="back-btn"
-          onClick={() => navigate("/login")}
+          onClick={() => navigate("/")}
           disabled={loading}
         >
           ← Back

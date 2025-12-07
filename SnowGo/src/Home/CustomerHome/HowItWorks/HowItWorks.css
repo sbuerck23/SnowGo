@@ -45,12 +45,6 @@
   display: flex;
   align-items: flex-start;
   gap: 1.5rem;
-  transition: all 0.3s ease;
-}
-
-.step:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-4px);
 }
 
 .step-number {

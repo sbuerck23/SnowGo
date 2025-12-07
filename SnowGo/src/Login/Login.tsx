@@ -30,7 +30,7 @@ function Login() {
 
       // Redirect to dashboard after 1.5 seconds
       setTimeout(() => {
-        navigate("/landing");
+        navigate("/");
       }, 1500);
     } catch (err) {
       const errorMessage =

@@ -32,12 +32,6 @@
   padding: 2rem;
   border-radius: 12px;
   text-align: center;
-  transition: all 0.3s ease;
-}
-
-.area-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
 }
 
 .area-card h3 {

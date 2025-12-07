@@ -104,7 +104,7 @@ function ShovelerLanding({ username, onLogout }: ShovelerLandingProps) {
 
   const handleLogout = async () => {
     await onLogout();
-    navigate("/login");
+    navigate("/");
   };
 
   const formatDate = (dateStr: string) => {

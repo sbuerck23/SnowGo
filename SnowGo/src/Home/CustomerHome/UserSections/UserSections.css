@@ -97,18 +97,6 @@
   box-shadow: var(--shadow-xl);
 }
 
-.btn-secondary {
-  background-color: transparent;
-  color: white;
-  border: 2px solid white;
-}
-
-.btn-secondary:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-xl);
-}
-
 @media (max-width: 768px) {
   .section-content {
     grid-template-columns: 1fr;

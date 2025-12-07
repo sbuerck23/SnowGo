@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-import CustomerLanding from "./CustomerLanding/CustomerLanding";
-import ShovelerLanding from "./ShovelerLanding/ShovelerLanding";
+import CustomerLanding from "../Home/CustomerHome/CustomerLanding";
+import ShovelerLanding from "../Home/ShovelerHome/ShovelerLanding";
 import "./Landing.css";
 
 type UserType = "customer" | "shoveler" | null;

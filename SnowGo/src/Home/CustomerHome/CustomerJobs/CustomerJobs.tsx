@@ -264,7 +264,6 @@ function CustomerJobs() {
                   <th>Location</th>
                   <th>Date & Time</th>
                   <th>Driveway Size</th>
-                  <th>Booking Status</th>
                   <th>Shoveler</th>
                   <th>Work Status</th>
                   <th>Actions</th>
@@ -295,16 +294,6 @@ function CustomerJobs() {
                       </div>
                     </td>
                     <td>{job.driveway_size}</td>
-                    <td>
-                      <span
-                        className={`status-badge ${getJobStatusColor(
-                          job.status
-                        )}`}
-                      >
-                        {job.status.charAt(0).toUpperCase() +
-                          job.status.slice(1)}
-                      </span>
-                    </td>
                     <td>
                       {job.shovelerName ? (
                         <div className="shoveler-info">

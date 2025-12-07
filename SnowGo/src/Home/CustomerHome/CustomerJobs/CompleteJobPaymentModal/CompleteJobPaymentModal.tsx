@@ -166,7 +166,8 @@ function CompleteJobPaymentModal({
                 </span>
               </div>
               <p className="input-hint">
-                This is the calculated payment based on work completed
+                This is the calculated payment based on the shoveler's hourly
+                rate
               </p>
             </div>
 
