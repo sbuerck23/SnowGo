@@ -18,7 +18,7 @@ function CustomerLanding({ username, onLogout }: CustomerLandingProps) {
 
   const handleLogout = async () => {
     await onLogout();
-    navigate("/login");
+    navigate("/");
   };
 
   const handleBookingClose = () => {
