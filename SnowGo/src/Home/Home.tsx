@@ -46,7 +46,8 @@ function Home() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate("/");
+    setUsername("");
+    setUserType(null);
   };
 
   if (!username) {

@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../../supabaseClient";
 import AvailableJobs from "./AvailableJobs/AvailableJobs";
@@ -25,7 +24,6 @@ interface AcceptedJob {
 }
 
 function ShovelerLanding({ username, onLogout }: ShovelerLandingProps) {
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<CurrentPage>("dashboard");
   const [acceptedJobs, setAcceptedJobs] = useState<AcceptedJob[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
@@ -104,7 +102,6 @@ function ShovelerLanding({ username, onLogout }: ShovelerLandingProps) {
 
   const handleLogout = async () => {
     await onLogout();
-    navigate("/");
   };
 
   const formatDate = (dateStr: string) => {
