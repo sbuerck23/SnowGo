@@ -1,5 +1,8 @@
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import CustomerJobs from "./CustomerJobs/CustomerJobs";
+import BookingModal from "../../BookingDialog/BookingDialog";
+import { supabase } from "../../supabaseClient";
 
 interface CustomerLandingProps {
   username: string;
@@ -9,9 +12,59 @@ interface CustomerLandingProps {
 function CustomerLanding({ username, onLogout }: CustomerLandingProps) {
   const navigate = useNavigate();
 
+  // NEW — modal open/close state
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [refreshCounter, setRefreshCounter] = useState(0);
+
   const handleLogout = async () => {
     await onLogout();
     navigate("/login");
+  };
+
+  const handleBookingClose = () => {
+    setShowBookingModal(false);
+  };
+
+  const handleBookingSubmit = async (formData: any) => {
+    setShowBookingModal(false);
+
+    try {
+      // Get current user
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        console.error("Please log in to book a shoveler");
+        navigate("/login");
+        return;
+      }
+
+      // Insert booking into database
+      const { error: insertError } = await supabase.from("bookings").insert([
+        {
+          user_id: user.id,
+          address: formData.address,
+          city: formData.city,
+          zip_code: formData.zipCode,
+          preferred_date: formData.date,
+          preferred_time: formData.time,
+          driveway_size: formData.drivewaySize,
+          additional_notes: formData.additionalNotes,
+          status: "pending",
+        },
+      ]);
+
+      if (insertError) {
+        console.error(insertError);
+        return;
+      }
+
+      setRefreshCounter((prev) => prev + 1);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -25,7 +78,9 @@ function CustomerLanding({ username, onLogout }: CustomerLandingProps) {
           </button>
         </div>
       </nav>
-      <CustomerJobs />
+
+      <CustomerJobs refreshCounter={refreshCounter} />
+
       <section className="user-section customer-section">
         <div className="section-content">
           <div className="section-text">
@@ -52,18 +107,26 @@ function CustomerLanding({ username, onLogout }: CustomerLandingProps) {
                 <span>Available in your area</span>
               </div>
             </div>
+
             <button
               className="btn btn-primary"
-              onClick={() => navigate("/booking")}
+              onClick={() => setShowBookingModal(true)}
             >
               Book a Shoveler
             </button>
           </div>
+
           <div className="section-image">
             <div className="placeholder-image">📍 Service Request</div>
           </div>
         </div>
       </section>
+
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={handleBookingClose}
+        onSubmit={handleBookingSubmit}
+      />
     </div>
   );
 }

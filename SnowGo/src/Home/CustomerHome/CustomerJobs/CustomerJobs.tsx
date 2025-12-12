@@ -23,7 +23,11 @@ interface JobWithAcceptance extends Job {
   completedAt: string | null;
 }
 
-function CustomerJobs() {
+interface CustomerJobsProps {
+  refreshCounter?: number;
+}
+
+function CustomerJobs({ refreshCounter }: CustomerJobsProps) {
   const [jobs, setJobs] = useState<JobWithAcceptance[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -105,7 +109,7 @@ function CustomerJobs() {
     };
 
     fetchCustomerJobs();
-  }, []);
+  }, [refreshCounter]);
 
   const handleDeleteJob = async (jobId: string, jobStatus: string) => {
     if (jobStatus !== "pending") {
@@ -200,21 +204,6 @@ function CustomerJobs() {
       throw err;
     } finally {
       setIsProcessingPayment(false);
-    }
-  };
-
-  const getJobStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "pending";
-      case "accepted":
-        return "accepted";
-      case "completed":
-        return "completed";
-      case "paid":
-        return "paid";
-      default:
-        return "default";
     }
   };
 

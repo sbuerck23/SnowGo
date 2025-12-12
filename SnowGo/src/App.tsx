@@ -4,7 +4,6 @@ import Home from "./Home/Home";
 import Login from "./Login/Login";
 import Register from "./Register/Register";
 import UserType from "./UserType/UserType";
-import Booking from "./Booking/Booking";
 import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -23,7 +22,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/booking" element={<Booking />} />
       </Routes>
       <Analytics />
     </>
