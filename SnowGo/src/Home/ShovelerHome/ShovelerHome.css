@@ -1,0 +1,239 @@
+.landing-container {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.landing-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: var(--gradient-dark);
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+.navbar-content {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.greeting {
+  color: var(--primary-color-dark);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.logout-btn {
+  padding: 0.6rem 1.2rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: var(--secondary-color);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+}
+
+.shoveler-landing {
+  padding: 40px 20px;
+}
+
+.shoveler-hero {
+  text-align: center;
+  margin-bottom: 60px;
+  padding: 60px 20px;
+  background: var(--gradient-primary);
+  color: white;
+  border-radius: 12px;
+}
+
+.shoveler-hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.shoveler-hero p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.shoveler-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.shoveler-section {
+  background: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.shoveler-section h2 {
+  color: var(--text-dark);
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+}
+
+.shoveler-section p {
+  color: var(--text-gray);
+  line-height: 1.6;
+}
+
+/* Accepted Jobs Section */
+.accepted-jobs-section {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.accepted-jobs-section h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+.accepted-jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.job-tile {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #2c7be5;
+  transition: all 0.3s ease;
+}
+
+.job-tile:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+
+.job-tile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.job-tile-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  flex: 1;
+}
+
+.job-status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background-color: #d4edda;
+  color: #155724;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.job-tile-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.job-city {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.job-details-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.detail-label {
+  color: #666;
+  min-width: 70px;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #333;
+  font-weight: 600;
+  flex: 1;
+}
+
+.complete-job-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: all 0.3s ease;
+}
+
+.complete-job-btn:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.shoveler-page {
+  animation: fadeIn 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .shoveler-hero {
+    padding: 40px 20px;
+  }
+
+  .shoveler-hero h1 {
+    font-size: 1.8rem;
+  }
+
+  .shoveler-hero p {
+    font-size: 1rem;
+  }
+}

@@ -8,13 +8,11 @@ import "./Home.css";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import type UserType from "../UserType/UserType";
-import { useNavigate } from "react-router-dom";
-import ShovelerLanding from "./ShovelerHome/ShovelerLanding";
-import CustomerLanding from "./CustomerHome/CustomerLanding";
+import ShovelerHome from "./ShovelerHome/ShovelerHome";
+import CustomerHome from "./CustomerHome/CustomerHome";
+import Navbar from "./Navbar/Navbar";
 
 function Home() {
-  const navigate = useNavigate();
-
   const [username, setUsername] = useState<string>("");
   const [userType, setUserType] = useState<"customer" | "shoveler" | null>(
     null
@@ -53,17 +51,7 @@ function Home() {
   if (!username) {
     return (
       <>
-        <nav className="landing-navbar">
-          <div className="navbar-brand">SnowGo</div>
-          <div className="navbar-content login-signup-buttons">
-            <button className="logout-btn" onClick={() => navigate("/login")}>
-              Log In
-            </button>
-            <button className="logout-btn" onClick={() => navigate("/signup")}>
-              Sign Up
-            </button>
-          </div>
-        </nav>
+        <Navbar username={username} onLogout={handleLogout} />
         <HeroSection />
         <UserSections />
         <HowItWorks />
@@ -77,7 +65,7 @@ function Home() {
   if (userType === "customer") {
     return (
       <>
-        <CustomerLanding username={username} onLogout={handleLogout} />
+        <CustomerHome username={username} onLogout={handleLogout} />
       </>
     );
   }
@@ -85,7 +73,7 @@ function Home() {
   //User type is shoveler
   return (
     <>
-      <ShovelerLanding username={username} onLogout={handleLogout} />
+      <ShovelerHome username={username} onLogout={handleLogout} />
     </>
   );
 }

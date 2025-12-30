@@ -3,6 +3,7 @@
   --primary-color-dark: #3555e4;
   --secondary-color: #9f9f9f;
   --gradient-primary: linear-gradient(135deg, #536ee4 0%, #9f9f9f 100%);
+  --gradient-dark: linear-gradient(135deg, #5b77f5 60%, #c6c6c6 100%);
 
   --text-dark: #333;
   --text-gray: #666;

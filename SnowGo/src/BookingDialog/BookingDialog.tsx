@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import "./BookingDialog.css";
 
-interface BookingModalProps {
+interface BookingDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (formData: any) => Promise<void> | void;
 }
 
-export default function BookingModal({
+export default function BookingDialog({
   isOpen,
   onClose,
   onSubmit,
-}: BookingModalProps) {
+}: BookingDialogProps) {
   const [formData, setFormData] = useState({
     address: "",
     city: "",

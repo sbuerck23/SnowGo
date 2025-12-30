@@ -4,7 +4,7 @@ function StatsSection() {
   const stats = [
     { id: 1, number: "500+", label: "Active Shovelers" },
     { id: 2, number: "2,500+", label: "Driveways Cleared" },
-    { id: 3, number: "4.9★", label: "Average Rating" },
+    { id: 3, number: "4.9⭐", label: "Average Rating" },
   ];
 
   return (

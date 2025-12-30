@@ -1,0 +1,59 @@
+/* Booking Button Section */
+.booking-button-section {
+  padding: 5rem 2rem;
+  background: var(--gradient-primary);
+}
+
+.booking-button-container {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.booking-button-container h2 {
+  font-size: 2.5rem;
+  color: white;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.booking-button-container p {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.btn-large {
+  padding: 18px 48px;
+  font-size: 1.2rem;
+  background-color: white;
+  color: var(--primary-color);
+  display: inline-block;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.btn-large:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-4px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .booking-button-section {
+    padding: 3rem 1.5rem;
+  }
+
+  .booking-button-container h2 {
+    font-size: 1.8rem;
+  }
+
+  .booking-button-container p {
+    font-size: 1rem;
+  }
+
+  .btn-large {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+  }
+}

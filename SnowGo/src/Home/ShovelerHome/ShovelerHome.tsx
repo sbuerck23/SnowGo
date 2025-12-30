@@ -4,8 +4,10 @@ import AvailableJobs from "./AvailableJobs/AvailableJobs";
 import YourEarnings from "./YourEarnings/YourEarnings";
 import YourProfile from "./YourProfile/YourProfile";
 import CompleteJobModal from "./CompleteJobModal/CompleteJobModal";
+import "./ShovelerHome.css";
+import Navbar from "../Navbar/Navbar";
 
-interface ShovelerLandingProps {
+interface ShovelerHomeProps {
   username: string;
   onLogout: () => Promise<void>;
 }
@@ -23,7 +25,7 @@ interface AcceptedJob {
   hourly_rate: number;
 }
 
-function ShovelerLanding({ username, onLogout }: ShovelerLandingProps) {
+function ShovelerHome({ username, onLogout }: ShovelerHomeProps) {
   const [currentPage, setCurrentPage] = useState<CurrentPage>("dashboard");
   const [acceptedJobs, setAcceptedJobs] = useState<AcceptedJob[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
@@ -182,140 +184,133 @@ function ShovelerLanding({ username, onLogout }: ShovelerLandingProps) {
   };
 
   return (
-    <div className="landing-container">
-      <nav className="landing-navbar">
-        <div className="navbar-brand">SnowGo</div>
-        <div className="navbar-content">
-          <span className="greeting">Hi {username}!</span>
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
-      </nav>
+    <>
+      <Navbar username={username} onLogout={handleLogout} />
+      <div className="landing-container">
+        {currentPage === "dashboard" && (
+          <div className="shoveler-landing">
+            <div className="shoveler-hero">
+              <h1>Welcome to Your Shoveler Dashboard</h1>
+              <p>Manage your jobs and earnings</p>
+            </div>
 
-      {currentPage === "dashboard" && (
-        <div className="shoveler-landing">
-          <div className="shoveler-hero">
-            <h1>Welcome to Your Shoveler Dashboard</h1>
-            <p>Manage your jobs and earnings</p>
-          </div>
+            {acceptedJobs.length > 0 && (
+              <div className="accepted-jobs-section">
+                <h2>Your Accepted Jobs</h2>
+                <div className="accepted-jobs-grid">
+                  {acceptedJobs.map((job) => (
+                    <div key={job.id} className="job-tile">
+                      <div className="job-tile-header">
+                        <h3>{job.address}</h3>
+                        <span className="job-status-badge">{job.status}</span>
+                      </div>
+                      <div className="job-tile-body">
+                        <p className="job-city">{job.city}</p>
+                        <div className="job-details-row">
+                          <span className="detail-label">📅 Date:</span>
+                          <span className="detail-value">
+                            {formatDate(job.preferred_date)}
+                          </span>
+                        </div>
+                        <div className="job-details-row">
+                          <span className="detail-label">🕐 Time:</span>
+                          <span className="detail-value">
+                            {formatTime(job.preferred_time)}
+                          </span>
+                        </div>
+                        <div className="job-details-row">
+                          <span className="detail-label">💰 Rate:</span>
+                          <span className="detail-value">
+                            ${job.hourly_rate}/hr
+                          </span>
+                        </div>
+                      </div>
+                      {isJobCompletable(job.preferred_date) && (
+                        <button
+                          className="complete-job-btn"
+                          onClick={() => setSelectedJobForCompletion(job)}
+                        >
+                          Complete Job
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
-          {acceptedJobs.length > 0 && (
-            <div className="accepted-jobs-section">
-              <h2>Your Accepted Jobs</h2>
-              <div className="accepted-jobs-grid">
-                {acceptedJobs.map((job) => (
-                  <div key={job.id} className="job-tile">
-                    <div className="job-tile-header">
-                      <h3>{job.address}</h3>
-                      <span className="job-status-badge">{job.status}</span>
-                    </div>
-                    <div className="job-tile-body">
-                      <p className="job-city">{job.city}</p>
-                      <div className="job-details-row">
-                        <span className="detail-label">📅 Date:</span>
-                        <span className="detail-value">
-                          {formatDate(job.preferred_date)}
-                        </span>
-                      </div>
-                      <div className="job-details-row">
-                        <span className="detail-label">🕐 Time:</span>
-                        <span className="detail-value">
-                          {formatTime(job.preferred_time)}
-                        </span>
-                      </div>
-                      <div className="job-details-row">
-                        <span className="detail-label">💰 Rate:</span>
-                        <span className="detail-value">
-                          ${job.hourly_rate}/hr
-                        </span>
-                      </div>
-                    </div>
-                    {isJobCompletable(job.preferred_date) && (
-                      <button
-                        className="complete-job-btn"
-                        onClick={() => setSelectedJobForCompletion(job)}
-                      >
-                        Complete Job
-                      </button>
-                    )}
-                  </div>
-                ))}
+            <div className="shoveler-content">
+              <div
+                className="shoveler-section"
+                onClick={() => setCurrentPage("jobs")}
+              >
+                <h2>Available Jobs</h2>
+                <p>Find and accept shoveling jobs in your area.</p>
+              </div>
+              <div
+                className="shoveler-section"
+                onClick={() => setCurrentPage("earnings")}
+              >
+                <h2>Your Earnings</h2>
+                <p>Track your income and payment history.</p>
+              </div>
+              <div
+                className="shoveler-section"
+                onClick={() => setCurrentPage("profile")}
+              >
+                <h2>Your Profile</h2>
+                <p>Manage your availability and service areas.</p>
               </div>
             </div>
-          )}
-
-          <div className="shoveler-content">
-            <div
-              className="shoveler-section"
-              onClick={() => setCurrentPage("jobs")}
-            >
-              <h2>Available Jobs</h2>
-              <p>Find and accept shoveling jobs in your area.</p>
-            </div>
-            <div
-              className="shoveler-section"
-              onClick={() => setCurrentPage("earnings")}
-            >
-              <h2>Your Earnings</h2>
-              <p>Track your income and payment history.</p>
-            </div>
-            <div
-              className="shoveler-section"
-              onClick={() => setCurrentPage("profile")}
-            >
-              <h2>Your Profile</h2>
-              <p>Manage your availability and service areas.</p>
-            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {currentPage === "jobs" && (
-        <div className="shoveler-page">
-          <button
-            className="back-btn"
-            onClick={() => setCurrentPage("dashboard")}
-          >
-            ← Back to Dashboard
-          </button>
-          <AvailableJobs />
-        </div>
-      )}
+        {currentPage === "jobs" && (
+          <div className="shoveler-page">
+            <button
+              className="back-btn"
+              onClick={() => setCurrentPage("dashboard")}
+            >
+              ← Back to Dashboard
+            </button>
+            <AvailableJobs />
+          </div>
+        )}
 
-      {currentPage === "earnings" && (
-        <div className="shoveler-page">
-          <button
-            className="back-btn"
-            onClick={() => setCurrentPage("dashboard")}
-          >
-            ← Back to Dashboard
-          </button>
-          <YourEarnings />
-        </div>
-      )}
+        {currentPage === "earnings" && (
+          <div className="shoveler-page">
+            <button
+              className="back-btn"
+              onClick={() => setCurrentPage("dashboard")}
+            >
+              ← Back to Dashboard
+            </button>
+            <YourEarnings />
+          </div>
+        )}
 
-      {currentPage === "profile" && (
-        <div className="shoveler-page">
-          <button
-            className="back-btn"
-            onClick={() => setCurrentPage("dashboard")}
-          >
-            ← Back to Dashboard
-          </button>
-          <YourProfile />
-        </div>
-      )}
+        {currentPage === "profile" && (
+          <div className="shoveler-page">
+            <button
+              className="back-btn"
+              onClick={() => setCurrentPage("dashboard")}
+            >
+              ← Back to Dashboard
+            </button>
+            <YourProfile />
+          </div>
+        )}
 
-      <CompleteJobModal
-        isOpen={!!selectedJobForCompletion}
-        job={selectedJobForCompletion}
-        onClose={() => setSelectedJobForCompletion(null)}
-        onSubmit={handleCompleteJobSubmit}
-        isLoading={isSubmittingCompletion}
-      />
-    </div>
+        <CompleteJobModal
+          isOpen={!!selectedJobForCompletion}
+          job={selectedJobForCompletion}
+          onClose={() => setSelectedJobForCompletion(null)}
+          onSubmit={handleCompleteJobSubmit}
+          isLoading={isSubmittingCompletion}
+        />
+      </div>
+    </>
   );
 }
 
-export default ShovelerLanding;
+export default ShovelerHome;
