@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../../../supabaseClient";
+import { supabase } from "../../../utils/supabaseClient";
+import {
+  GoogleMap,
+  useLoadScript,
+  Marker,
+  Circle,
+} from "@react-google-maps/api";
 import "./AvailableJobs.css";
 
 interface Job {
@@ -7,12 +13,16 @@ interface Job {
   address: string;
   city: string;
   zip_code: string;
+  latitude: number;
+  longitude: number;
+  geocoded_address: string;
   preferred_date: string;
   preferred_time: string;
   driveway_size: string;
   additional_notes: string;
   status: string;
   created_at: string;
+  distance_miles?: number;
 }
 
 function AvailableJobs() {
@@ -22,6 +32,22 @@ function AvailableJobs() {
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [acceptedJobs, setAcceptedJobs] = useState<Set<string>>(new Set());
+  const [shovelerLocation, setShovelerLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
+  const [serviceRadius, setServiceRadius] = useState<number>(10);
+  const [showMap, setShowMap] = useState(false);
+
+  // Use useLoadScript instead of LoadScript to prevent re-loading
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
+  });
+
+  const mapContainerStyle = {
+    width: "100%",
+    height: "500px",
+  };
 
   useEffect(() => {
     const fetchUserAndJobs = async () => {
@@ -39,14 +65,46 @@ function AvailableJobs() {
         setUser(user);
         setUserId(user.id);
 
-        // Fetch available bookings (pending status and not from this shoveler)
-        const { data: bookings, error: bookingsError } = await supabase
-          .from("bookings")
-          .select("*")
-          .eq("status", "pending")
-          .order("preferred_date", { ascending: true });
+        // Fetch shoveler profile to get home location and service radius
+        const { data: profile, error: profileError } = await supabase
+          .from("shoveler_profiles")
+          .select("home_latitude, home_longitude, service_radius_miles")
+          .eq("user_id", user.id)
+          .single();
 
-        if (bookingsError) throw bookingsError;
+        if (profileError) {
+          console.error("Profile error:", profileError);
+        }
+
+        if (!profile?.home_latitude || !profile?.home_longitude) {
+          setError(
+            "Please set your home location in Your Profile to see available jobs."
+          );
+          setLoading(false);
+          return;
+        }
+
+        setShovelerLocation({
+          lat: profile.home_latitude,
+          lng: profile.home_longitude,
+        });
+        setServiceRadius(profile.service_radius_miles || 10);
+
+        // Use PostGIS RPC function to get jobs within radius
+        const { data: bookings, error: bookingsError } = await supabase.rpc(
+          "get_jobs_within_radius",
+          {
+            shoveler_lat: profile.home_latitude,
+            shoveler_lon: profile.home_longitude,
+            radius_miles: profile.service_radius_miles || 10,
+          }
+        );
+
+        if (bookingsError) {
+          console.error("Bookings error:", bookingsError);
+          throw bookingsError;
+        }
+
         setJobs(bookings || []);
 
         // Fetch jobs already accepted by this shoveler
@@ -124,11 +182,78 @@ function AvailableJobs() {
     );
   }
 
+  if (loadError) {
+    return (
+      <div className="available-jobs-container">
+        <h1>Available Jobs</h1>
+        <p className="error">Error loading maps</p>
+      </div>
+    );
+  }
+
   return (
     <div className="available-jobs-container">
-      <h1>Available Jobs</h1>
+      <div className="jobs-header">
+        <h1>Available Jobs</h1>
+        {shovelerLocation && isLoaded && (
+          <button
+            className="toggle-map-btn"
+            onClick={() => setShowMap(!showMap)}
+          >
+            {showMap ? "Hide Map" : "Show Map"}
+          </button>
+        )}
+      </div>
+
+      {showMap && shovelerLocation && isLoaded && (
+        <div className="map-container">
+          <GoogleMap
+            mapContainerStyle={mapContainerStyle}
+            center={shovelerLocation}
+            zoom={11}
+          >
+            {/* Shoveler's home location marker */}
+            <Marker
+              position={shovelerLocation}
+              icon={{
+                url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+              }}
+              title="Your Location"
+            />
+
+            {/* Service radius circle */}
+            <Circle
+              center={shovelerLocation}
+              radius={serviceRadius * 1609.34} // Convert miles to meters
+              options={{
+                fillColor: "#4285F4",
+                fillOpacity: 0.1,
+                strokeColor: "#4285F4",
+                strokeOpacity: 0.4,
+                strokeWeight: 2,
+              }}
+            />
+
+            {/* Job markers */}
+            {jobs.map((job) => (
+              <Marker
+                key={job.id}
+                position={{ lat: job.latitude, lng: job.longitude }}
+                title={`${job.address} - ${job.distance_miles?.toFixed(1)} mi`}
+                icon={{
+                  url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                }}
+              />
+            ))}
+          </GoogleMap>
+        </div>
+      )}
+
       {jobs.length === 0 ? (
-        <p className="no-jobs">No jobs available at the moment.</p>
+        <p className="no-jobs">
+          No jobs available within your service radius. Try increasing your
+          service radius in Your Profile.
+        </p>
       ) : (
         <div className="jobs-grid">
           {jobs.map((job) => (
@@ -139,6 +264,11 @@ function AvailableJobs() {
                 </h2>
                 <span className={`job-status ${job.status}`}>{job.status}</span>
               </div>
+              {job.distance_miles !== undefined && (
+                <div className="job-distance">
+                  📍 {job.distance_miles.toFixed(1)} miles away
+                </div>
+              )}
               <div className="job-details">
                 <div className="detail-row">
                   <span className="label">Zip Code:</span>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { geocodeAddress } from "../utils/geocoding";
 import "./BookingDialog.css";
 
 interface BookingDialogProps {
@@ -46,7 +47,31 @@ export default function BookingDialog({
     setError(null);
 
     try {
-      await onSubmit(formData);
+      // Geocode and validate address
+      setError("Validating address...");
+      const geocodeResult = await geocodeAddress(
+        formData.address,
+        formData.city,
+        formData.zipCode
+      );
+
+      if (!geocodeResult) {
+        setError(
+          "Unable to verify this address. Please check that the address, city, and ZIP code are correct."
+        );
+        setLoading(false);
+        return;
+      }
+
+      setError(null);
+
+      // Pass geocoded data to parent
+      await onSubmit({
+        ...formData,
+        latitude: geocodeResult.latitude,
+        longitude: geocodeResult.longitude,
+        geocodedAddress: geocodeResult.formattedAddress,
+      });
 
       // Reset form after submit
       setFormData({
@@ -62,7 +87,6 @@ export default function BookingDialog({
       setError(err?.message || "An unexpected error occurred");
     } finally {
       setLoading(false);
-      setError(null);
     }
   };
 

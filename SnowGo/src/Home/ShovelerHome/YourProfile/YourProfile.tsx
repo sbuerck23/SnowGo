@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../../../supabaseClient";
+import { supabase } from "../../../utils/supabaseClient";
+import { geocodeAddress } from "../../../utils/geocoding";
 import "./YourProfile.css";
 
 interface ShovelerProfile {
@@ -15,6 +16,11 @@ interface ShovelerProfile {
   service_days: string;
   rating: number;
   total_jobs_completed: number;
+  home_address: string;
+  home_city: string;
+  home_zip_code: string;
+  home_latitude: number;
+  home_longitude: number;
 }
 
 function YourProfile() {
@@ -35,6 +41,9 @@ function YourProfile() {
     availability_start_time: "08:00",
     availability_end_time: "17:00",
     service_days: "Monday,Tuesday,Wednesday,Thursday,Friday",
+    home_address: "",
+    home_city: "",
+    home_zip_code: "",
   });
 
   useEffect(() => {
@@ -78,6 +87,9 @@ function YourProfile() {
             service_days:
               profileData.service_days ||
               "Monday,Tuesday,Wednesday,Thursday,Friday",
+            home_address: profileData.home_address || "",
+            home_city: profileData.home_city || "",
+            home_zip_code: profileData.home_zip_code || "",
           });
         } else {
           // Profile doesn't exist yet, show form to create one
@@ -126,12 +138,47 @@ function YourProfile() {
 
     try {
       setSuccessMessage(null);
+      setError(null);
+
+      // Geocode home address if provided
+      let homeLatitude = null;
+      let homeLongitude = null;
+
+      if (
+        formData.home_address &&
+        formData.home_city &&
+        formData.home_zip_code
+      ) {
+        setError("Validating home address...");
+        const geocodeResult = await geocodeAddress(
+          formData.home_address,
+          formData.home_city,
+          formData.home_zip_code
+        );
+
+        if (!geocodeResult) {
+          setError(
+            "Unable to verify your home address. Please check that the address, city, and ZIP code are correct."
+          );
+          return;
+        }
+
+        homeLatitude = geocodeResult.latitude;
+        homeLongitude = geocodeResult.longitude;
+        setError(null);
+      }
+
+      const dataToSave = {
+        ...formData,
+        home_latitude: homeLatitude,
+        home_longitude: homeLongitude,
+      };
 
       if (profile) {
         // Update existing profile
         const { error } = await supabase
           .from("shoveler_profiles")
-          .update(formData)
+          .update(dataToSave)
           .eq("user_id", userId);
 
         if (error) throw error;
@@ -139,20 +186,27 @@ function YourProfile() {
         // Create new profile
         const { error } = await supabase.from("shoveler_profiles").insert({
           user_id: userId,
-          ...formData,
+          ...dataToSave,
         });
 
         if (error) throw error;
       }
 
-      setProfile(formData as ShovelerProfile);
+      // Update profile state with all data including coordinates
+      setProfile({
+        ...dataToSave,
+        id: profile?.id || "",
+        user_id: userId,
+        rating: profile?.rating || 0,
+        total_jobs_completed: profile?.total_jobs_completed || 0,
+      } as ShovelerProfile);
       setIsEditing(false);
       setSuccessMessage("Profile saved successfully!");
 
       setTimeout(() => setSuccessMessage(null), 3000);
     } catch (err) {
       console.error("Error saving profile:", err);
-      alert(err instanceof Error ? err.message : "Failed to save profile");
+      setError(err instanceof Error ? err.message : "Failed to save profile");
     }
   };
 
@@ -201,6 +255,51 @@ function YourProfile() {
               onChange={handleInputChange}
               required
             />
+          </div>
+
+          <div className="form-section">
+            <h3>Home Location</h3>
+            <p className="form-help-text">
+              Set your home location to see jobs within your service radius
+            </p>
+
+            <div className="form-group">
+              <label htmlFor="home_address">Home Address</label>
+              <input
+                type="text"
+                id="home_address"
+                name="home_address"
+                value={formData.home_address}
+                onChange={handleInputChange}
+                placeholder="123 Main Street"
+              />
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="home_city">City</label>
+                <input
+                  type="text"
+                  id="home_city"
+                  name="home_city"
+                  value={formData.home_city}
+                  onChange={handleInputChange}
+                  placeholder="Denver"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="home_zip_code">ZIP Code</label>
+                <input
+                  type="text"
+                  id="home_zip_code"
+                  name="home_zip_code"
+                  value={formData.home_zip_code}
+                  onChange={handleInputChange}
+                  placeholder="80202"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="form-group">
@@ -355,6 +454,12 @@ function YourProfile() {
 
             <div className="info-section">
               <h3>Service Details</h3>
+              {profile.home_address && (
+                <p>
+                  <strong>Home Location:</strong> {profile.home_address},{" "}
+                  {profile.home_city}, {profile.home_zip_code}
+                </p>
+              )}
               <p>
                 <strong>Service Radius:</strong> {profile.service_radius_miles}{" "}
                 miles

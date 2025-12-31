@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../utils/supabaseClient";
+import { geocodeAddress } from "../utils/geocoding";
 import "./Booking.css";
 
 function Booking() {
@@ -52,13 +53,34 @@ function Booking() {
         return;
       }
 
-      // Insert booking into database
+      // Geocode and validate address
+      setError("Validating address...");
+      const geocodeResult = await geocodeAddress(
+        formData.address,
+        formData.city,
+        formData.zipCode
+      );
+
+      if (!geocodeResult) {
+        setError(
+          "Unable to verify this address. Please check that the address, city, and ZIP code are correct."
+        );
+        setLoading(false);
+        return;
+      }
+
+      setError(null);
+
+      // Insert booking into database with geocoded coordinates
       const { error: insertError } = await supabase.from("bookings").insert([
         {
           user_id: user.id,
           address: formData.address,
           city: formData.city,
           zip_code: formData.zipCode,
+          latitude: geocodeResult.latitude,
+          longitude: geocodeResult.longitude,
+          geocoded_address: geocodeResult.formattedAddress,
           preferred_date: formData.date,
           preferred_time: formData.time,
           driveway_size: formData.drivewaySize,
@@ -90,7 +112,11 @@ function Booking() {
         navigate("/landing");
       }, 2000);
     } catch (err) {
-      setError("An unexpected error occurred");
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred");
+      }
       console.error(err);
     } finally {
       setLoading(false);

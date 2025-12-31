@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "../../supabaseClient";
+import { supabase } from "../../utils/supabaseClient";
 import AvailableJobs from "./AvailableJobs/AvailableJobs";
 import YourEarnings from "./YourEarnings/YourEarnings";
 import YourProfile from "./YourProfile/YourProfile";

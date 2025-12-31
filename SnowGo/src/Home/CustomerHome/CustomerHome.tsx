@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import CustomerJobs from "./CustomerJobs/CustomerJobs";
 import BookingDialog from "../../BookingDialog/BookingDialog";
-import { supabase } from "../../supabaseClient";
+import { supabase } from "../../utils/supabaseClient";
 import Navbar from "../Navbar/Navbar";
 import "./CustomerHome.css";
 
@@ -41,13 +41,16 @@ function CustomerHome({ username, onLogout }: CustomerHomeProps) {
         return;
       }
 
-      // Insert booking into database
+      // Insert booking into database with geocoded coordinates
       const { error: insertError } = await supabase.from("bookings").insert([
         {
           user_id: user.id,
           address: formData.address,
           city: formData.city,
           zip_code: formData.zipCode,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
+          geocoded_address: formData.geocodedAddress,
           preferred_date: formData.date,
           preferred_time: formData.time,
           driveway_size: formData.drivewaySize,

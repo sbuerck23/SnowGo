@@ -6,7 +6,7 @@ import ServiceAreas from "./CustomerHome/ServiceAreas/ServiceAreas";
 import StatsSection from "./CustomerHome/StatsSection/StatsSection";
 import "./Home.css";
 import { useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
+import { supabase } from "../utils/supabaseClient";
 import type UserType from "../UserType/UserType";
 import ShovelerHome from "./ShovelerHome/ShovelerHome";
 import CustomerHome from "./CustomerHome/CustomerHome";
