@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
-import { useLoadScript } from "@react-google-maps/api";
+import { Autocomplete, useLoadScript } from "@react-google-maps/api";
 
-const libraries: "places"[] = ["places"];
+const libraries: ("places")[] = ["places"];
 
 interface AddressAutocompleteProps {
   value: string;
@@ -28,134 +28,77 @@ export default function AddressAutocomplete({
   name = "address",
   id = "address",
 }: AddressAutocompleteProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [autocompleteWidget, setAutocompleteWidget] = useState<any>(null);
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const [shouldShowAutocomplete, setShouldShowAutocomplete] = useState(false);
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "",
     libraries,
   });
 
+  // Wait a small delay before showing autocomplete to ensure modal is fully rendered
   useEffect(() => {
-    if (!isLoaded || !inputRef.current || autocompleteWidget) return;
+    const timer = setTimeout(() => {
+      setShouldShowAutocomplete(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
-    // Use the new PlaceAutocompleteElement
-    const setupAutocomplete = async () => {
-      try {
-        // @ts-ignore - PlaceAutocompleteElement is not yet in @types/google.maps
-        const { PlaceAutocompleteElement } = await google.maps.importLibrary(
-          "places"
-        );
+  const onLoad = (autocomplete: google.maps.places.Autocomplete) => {
+    autocompleteRef.current = autocomplete;
+  };
 
-        // @ts-ignore - Using new Google Places API
-        const autocomplete = new PlaceAutocompleteElement({
-          componentRestrictions: { country: "us" },
-        });
+  const onPlaceChanged = () => {
+    if (autocompleteRef.current) {
+      const place = autocompleteRef.current.getPlace();
 
-        // Set placeholder on the inner input
-        const innerInput = autocomplete.querySelector("input");
-        if (innerInput) {
-          innerInput.placeholder = placeholder;
-        }
-
-        // Insert the autocomplete element
-        if (inputRef.current && inputRef.current.parentElement) {
-          inputRef.current.style.display = "none";
-          inputRef.current.parentElement.insertBefore(
-            autocomplete,
-            inputRef.current
-          );
-
-          autocomplete.addEventListener(
-            "gmp-placeselect",
-            async (event: any) => {
-              const place = event.place;
-
-              if (!place || !place.location) {
-                console.log("No details available for input");
-                return;
-              }
-
-              // Fetch full place details
-              await place.fetchFields({
-                fields: ["addressComponents", "location", "formattedAddress"],
-              });
-
-              // Extract address components
-              let streetNumber = "";
-              let route = "";
-              let city = "";
-              let zipCode = "";
-
-              if (place.addressComponents) {
-                place.addressComponents.forEach((component: any) => {
-                  const types = component.types;
-
-                  if (types.includes("street_number")) {
-                    streetNumber = component.longText;
-                  }
-                  if (types.includes("route")) {
-                    route = component.longText;
-                  }
-                  if (types.includes("locality")) {
-                    city = component.longText;
-                  }
-                  if (types.includes("postal_code")) {
-                    zipCode = component.longText;
-                  }
-                });
-              }
-
-              const fullAddress = `${streetNumber} ${route}`.trim();
-              const latitude = place.location.lat();
-              const longitude = place.location.lng();
-
-              console.log("Place selected:", {
-                fullAddress,
-                city,
-                zipCode,
-                latitude,
-                longitude,
-              });
-
-              // Update the hidden input value
-              if (inputRef.current) {
-                inputRef.current.value = fullAddress;
-              }
-              onChange(fullAddress);
-
-              // Notify parent component with all extracted data
-              onPlaceSelected({
-                address: fullAddress,
-                city,
-                zipCode,
-                latitude,
-                longitude,
-              });
-            }
-          );
-
-          setAutocompleteWidget(autocomplete);
-        }
-      } catch (error) {
-        console.error("Error loading PlaceAutocompleteElement:", error);
+      if (!place.geometry || !place.geometry.location) {
+        console.log("No details available for input:", place.name);
+        return;
       }
-    };
 
-    setupAutocomplete();
-  }, [isLoaded, onChange, onPlaceSelected]);
+      // Extract address components
+      let streetNumber = "";
+      let route = "";
+      let city = "";
+      let zipCode = "";
 
-  // Sync the autocomplete input with the value prop
-  useEffect(() => {
-    if (autocompleteWidget) {
-      const input = autocompleteWidget.querySelector("input");
-      if (input && input.value !== value) {
-        input.value = value;
-      }
+      place.address_components?.forEach((component) => {
+        const types = component.types;
+
+        if (types.includes("street_number")) {
+          streetNumber = component.long_name;
+        }
+        if (types.includes("route")) {
+          route = component.long_name;
+        }
+        if (types.includes("locality")) {
+          city = component.long_name;
+        }
+        if (types.includes("postal_code")) {
+          zipCode = component.long_name;
+        }
+      });
+
+      const fullAddress = `${streetNumber} ${route}`.trim();
+      const latitude = place.geometry.location.lat();
+      const longitude = place.geometry.location.lng();
+
+      // Update the input value
+      onChange(fullAddress);
+
+      // Notify parent component with all extracted data
+      onPlaceSelected({
+        address: fullAddress,
+        city,
+        zipCode,
+        latitude,
+        longitude,
+      });
     }
-  }, [value, autocompleteWidget]);
+  };
 
-  if (!isLoaded || loadError) {
+  if (!isLoaded || !shouldShowAutocomplete || loadError) {
     return (
       <input
         type="text"
@@ -170,9 +113,16 @@ export default function AddressAutocomplete({
   }
 
   return (
-    <>
+    <Autocomplete
+      onLoad={onLoad}
+      onPlaceChanged={onPlaceChanged}
+      options={{
+        componentRestrictions: { country: "us" },
+        fields: ["address_components", "geometry", "formatted_address"],
+        types: ["address"],
+      }}
+    >
       <input
-        ref={inputRef}
         type="text"
         id={id}
         name={name}
@@ -181,6 +131,6 @@ export default function AddressAutocomplete({
         placeholder={placeholder}
         required={required}
       />
-    </>
+    </Autocomplete>
   );
 }
