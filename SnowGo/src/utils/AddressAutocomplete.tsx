@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { Autocomplete, useLoadScript } from "@react-google-maps/api";
 
-const libraries: ("places")[] = ["places"];
+const libraries: "places"[] = ["places"];
 
 interface AddressAutocompleteProps {
   value: string;
