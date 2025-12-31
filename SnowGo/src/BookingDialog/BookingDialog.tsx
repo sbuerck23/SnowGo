@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { geocodeAddress } from "../utils/geocoding";
+import AddressAutocomplete from "../utils/AddressAutocomplete";
 import "./BookingDialog.css";
 
 interface BookingDialogProps {
@@ -21,6 +22,8 @@ export default function BookingDialog({
     time: "",
     drivewaySize: "small",
     additionalNotes: "",
+    latitude: null as number | null,
+    longitude: null as number | null,
   });
 
   const [loading, setLoading] = useState(false);
@@ -41,26 +44,53 @@ export default function BookingDialog({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handlePlaceSelected = (place: {
+    address: string;
+    city: string;
+    zipCode: string;
+    latitude: number;
+    longitude: number;
+  }) => {
+    setFormData((prev) => ({
+      ...prev,
+      address: place.address,
+      city: place.city,
+      zipCode: place.zipCode,
+      latitude: place.latitude,
+      longitude: place.longitude,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      // Geocode and validate address
-      setError("Validating address...");
-      const geocodeResult = await geocodeAddress(
-        formData.address,
-        formData.city,
-        formData.zipCode
-      );
+      // Use autocomplete coordinates if available, otherwise geocode
+      let latitude = formData.latitude;
+      let longitude = formData.longitude;
+      let formattedAddress = `${formData.address}, ${formData.city}, ${formData.zipCode}`;
 
-      if (!geocodeResult) {
-        setError(
-          "Unable to verify this address. Please check that the address, city, and ZIP code are correct."
+      if (!latitude || !longitude) {
+        setError("Validating address...");
+        const geocodeResult = await geocodeAddress(
+          formData.address,
+          formData.city,
+          formData.zipCode
         );
-        setLoading(false);
-        return;
+
+        if (!geocodeResult) {
+          setError(
+            "Unable to verify this address. Please check that the address, city, and ZIP code are correct."
+          );
+          setLoading(false);
+          return;
+        }
+
+        latitude = geocodeResult.latitude;
+        longitude = geocodeResult.longitude;
+        formattedAddress = geocodeResult.formattedAddress;
       }
 
       setError(null);
@@ -68,9 +98,9 @@ export default function BookingDialog({
       // Pass geocoded data to parent
       await onSubmit({
         ...formData,
-        latitude: geocodeResult.latitude,
-        longitude: geocodeResult.longitude,
-        geocodedAddress: geocodeResult.formattedAddress,
+        latitude,
+        longitude,
+        geocodedAddress: formattedAddress,
       });
 
       // Reset form after submit
@@ -82,6 +112,8 @@ export default function BookingDialog({
         time: "",
         drivewaySize: "small",
         additionalNotes: "",
+        latitude: null,
+        longitude: null,
       });
     } catch (err: any) {
       setError(err?.message || "An unexpected error occurred");
@@ -117,13 +149,13 @@ export default function BookingDialog({
 
             <div className="form-group">
               <label htmlFor="address">Address *</label>
-              <input
-                type="text"
-                id="address"
-                name="address"
+              <AddressAutocomplete
                 value={formData.address}
-                onChange={handleChange}
-                placeholder="123 Main Street"
+                onChange={(value) =>
+                  setFormData((prev) => ({ ...prev, address: value }))
+                }
+                onPlaceSelected={handlePlaceSelected}
+                placeholder="Start typing your address..."
                 required
               />
             </div>

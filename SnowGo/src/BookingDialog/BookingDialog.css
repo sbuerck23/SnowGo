@@ -236,3 +236,31 @@
 .modal-close-btn:hover {
   color: var(--primary-color);
 }
+
+/* Google Places Autocomplete dropdown styling for modal */
+.pac-container {
+  z-index: 3000 !important;
+  font-family: inherit;
+  border-radius: 8px;
+  margin-top: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.pac-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  border-top: 1px solid #e5e5e5;
+}
+
+.pac-item:first-child {
+  border-top: none;
+}
+
+.pac-item:hover {
+  background-color: #f5f5f5;
+}
+
+.pac-icon {
+  margin-top: 6px;
+}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../../utils/supabaseClient";
 import { geocodeAddress } from "../../../utils/geocoding";
+import AddressAutocomplete from "../../../utils/AddressAutocomplete";
 import "./YourProfile.css";
 
 interface ShovelerProfile {
@@ -44,6 +45,8 @@ function YourProfile() {
     home_address: "",
     home_city: "",
     home_zip_code: "",
+    home_latitude: null as number | null,
+    home_longitude: null as number | null,
   });
 
   useEffect(() => {
@@ -90,6 +93,8 @@ function YourProfile() {
             home_address: profileData.home_address || "",
             home_city: profileData.home_city || "",
             home_zip_code: profileData.home_zip_code || "",
+            home_latitude: profileData.home_latitude,
+            home_longitude: profileData.home_longitude,
           });
         } else {
           // Profile doesn't exist yet, show form to create one
@@ -133,6 +138,23 @@ function YourProfile() {
     }
   };
 
+  const handlePlaceSelected = (place: {
+    address: string;
+    city: string;
+    zipCode: string;
+    latitude: number;
+    longitude: number;
+  }) => {
+    setFormData((prev) => ({
+      ...prev,
+      home_address: place.address,
+      home_city: place.city,
+      home_zip_code: place.zipCode,
+      home_latitude: place.latitude,
+      home_longitude: place.longitude,
+    }));
+  };
+
   const handleSave = async () => {
     if (!userId) return;
 
@@ -141,30 +163,32 @@ function YourProfile() {
       setError(null);
 
       // Geocode home address if provided
-      let homeLatitude = null;
-      let homeLongitude = null;
+      let homeLatitude = formData.home_latitude;
+      let homeLongitude = formData.home_longitude;
 
       if (
         formData.home_address &&
         formData.home_city &&
         formData.home_zip_code
       ) {
-        setError("Validating home address...");
-        const geocodeResult = await geocodeAddress(
-          formData.home_address,
-          formData.home_city,
-          formData.home_zip_code
-        );
-
-        if (!geocodeResult) {
-          setError(
-            "Unable to verify your home address. Please check that the address, city, and ZIP code are correct."
+        if (!homeLatitude || !homeLongitude) {
+          setError("Validating home address...");
+          const geocodeResult = await geocodeAddress(
+            formData.home_address,
+            formData.home_city,
+            formData.home_zip_code
           );
-          return;
-        }
 
-        homeLatitude = geocodeResult.latitude;
-        homeLongitude = geocodeResult.longitude;
+          if (!geocodeResult) {
+            setError(
+              "Unable to verify your home address. Please check that the address, city, and ZIP code are correct."
+            );
+            return;
+          }
+
+          homeLatitude = geocodeResult.latitude;
+          homeLongitude = geocodeResult.longitude;
+        }
         setError(null);
       }
 
@@ -265,13 +289,15 @@ function YourProfile() {
 
             <div className="form-group">
               <label htmlFor="home_address">Home Address</label>
-              <input
-                type="text"
-                id="home_address"
-                name="home_address"
+              <AddressAutocomplete
                 value={formData.home_address}
-                onChange={handleInputChange}
-                placeholder="123 Main Street"
+                onChange={(value) =>
+                  setFormData((prev) => ({ ...prev, home_address: value }))
+                }
+                onPlaceSelected={handlePlaceSelected}
+                placeholder="Start typing your address..."
+                name="home_address"
+                id="home_address"
               />
             </div>
 
