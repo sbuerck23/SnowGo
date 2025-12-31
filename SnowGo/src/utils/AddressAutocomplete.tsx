@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { useLoadScript } from "@react-google-maps/api";
 
-const libraries: ("places")[] = ["places"];
+const libraries: "places"[] = ["places"];
 
 interface AddressAutocompleteProps {
   value: string;
@@ -66,71 +66,74 @@ export default function AddressAutocomplete({
             inputRef.current
           );
 
-          autocomplete.addEventListener("gmp-placeselect", async (event: any) => {
-            const place = event.place;
+          autocomplete.addEventListener(
+            "gmp-placeselect",
+            async (event: any) => {
+              const place = event.place;
 
-            if (!place || !place.location) {
-              console.log("No details available for input");
-              return;
-            }
+              if (!place || !place.location) {
+                console.log("No details available for input");
+                return;
+              }
 
-            // Fetch full place details
-            await place.fetchFields({
-              fields: ["addressComponents", "location", "formattedAddress"],
-            });
+              // Fetch full place details
+              await place.fetchFields({
+                fields: ["addressComponents", "location", "formattedAddress"],
+              });
 
-            // Extract address components
-            let streetNumber = "";
-            let route = "";
-            let city = "";
-            let zipCode = "";
+              // Extract address components
+              let streetNumber = "";
+              let route = "";
+              let city = "";
+              let zipCode = "";
 
-            if (place.addressComponents) {
-              place.addressComponents.forEach((component: any) => {
-                const types = component.types;
+              if (place.addressComponents) {
+                place.addressComponents.forEach((component: any) => {
+                  const types = component.types;
 
-                if (types.includes("street_number")) {
-                  streetNumber = component.longText;
-                }
-                if (types.includes("route")) {
-                  route = component.longText;
-                }
-                if (types.includes("locality")) {
-                  city = component.longText;
-                }
-                if (types.includes("postal_code")) {
-                  zipCode = component.longText;
-                }
+                  if (types.includes("street_number")) {
+                    streetNumber = component.longText;
+                  }
+                  if (types.includes("route")) {
+                    route = component.longText;
+                  }
+                  if (types.includes("locality")) {
+                    city = component.longText;
+                  }
+                  if (types.includes("postal_code")) {
+                    zipCode = component.longText;
+                  }
+                });
+              }
+
+              const fullAddress = `${streetNumber} ${route}`.trim();
+              const latitude = place.location.lat();
+              const longitude = place.location.lng();
+
+              console.log("Place selected:", {
+                fullAddress,
+                city,
+                zipCode,
+                latitude,
+                longitude,
+              });
+
+              // Update the hidden input value
+              if (inputRef.current) {
+                inputRef.current.value = fullAddress;
+              }
+              onChange(fullAddress);
+
+              // Notify parent component with all extracted data
+              onPlaceSelected({
+                address: fullAddress,
+                city,
+                zipCode,
+                latitude,
+                longitude,
               });
             }
-
-            const fullAddress = `${streetNumber} ${route}`.trim();
-            const latitude = place.location.lat();
-            const longitude = place.location.lng();
-
-            console.log("Place selected:", {
-              fullAddress,
-              city,
-              zipCode,
-              latitude,
-              longitude,
-            });
-
-            // Update the hidden input value
-            if (inputRef.current) {
-              inputRef.current.value = fullAddress;
-            }
-            onChange(fullAddress);
-
-            // Notify parent component with all extracted data
-            onPlaceSelected({
-              address: fullAddress,
-              city,
-              zipCode,
-              latitude,
-              longitude,
-            });
-          });
+          );
 
           setAutocompleteWidget(autocomplete);
         }
