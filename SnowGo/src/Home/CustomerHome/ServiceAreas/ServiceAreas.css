@@ -1,19 +1,19 @@
 /* Service Areas */
 .service-areas {
   padding: 5rem 2rem;
-  background: white;
+  background: var(--bg-white);
 }
 
 .service-areas h2 {
   font-size: 2.5rem;
-  color: #333;
+  color: var(--text-dark);
   text-align: center;
   margin-bottom: 0.5rem;
 }
 
 .subtitle {
   text-align: center;
-  color: #666;
+  color: var(--text-gray);
   font-size: 1.1rem;
   margin-bottom: 3rem;
 }

@@ -22,7 +22,7 @@
 }
 
 .modal-content {
-  background: white;
+  background: var(--bg-white);
   border-radius: 12px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   max-width: 500px;
@@ -48,14 +48,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px;
-  border-bottom: 1px solid #eee;
+  padding: 0 20px;
 }
 
 .modal-header h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #333;
+  color: var(--text-dark);
 }
 
 .modal-close-btn {
@@ -75,8 +74,8 @@
 }
 
 .modal-close-btn:hover:not(:disabled) {
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
 }
 
 .modal-close-btn:disabled {
@@ -91,7 +90,7 @@
 }
 
 .job-info {
-  background-color: #f8f9fa;
+  background-color: var(--bg-light);
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 24px;
@@ -100,12 +99,12 @@
 .job-info h3 {
   margin: 0 0 8px 0;
   font-size: 1.1rem;
-  color: #333;
+  color: var(--text-dark);
 }
 
 .job-info p {
   margin: 4px 0;
-  color: #666;
+  color: var(--text-gray);
   font-size: 0.9rem;
 }
 
@@ -131,7 +130,7 @@
 .form-group label {
   display: block;
   font-weight: 600;
-  color: #333;
+  color: var(--text-dark);
   margin-bottom: 8px;
   font-size: 0.95rem;
 }
@@ -162,13 +161,13 @@
 }
 
 .hours-input-wrapper input:disabled {
-  background-color: #f5f5f5;
+  background-color: var(--bg-light);
   cursor: not-allowed;
 }
 
 .hours-label {
   font-weight: 500;
-  color: #666;
+  color: var(--text-gray);
   min-width: 50px;
 }
 
@@ -218,7 +217,7 @@
 }
 
 .form-group textarea:disabled {
-  background-color: #f5f5f5;
+  background-color: var(--bg-light);
   cursor: not-allowed;
 }
 
@@ -226,8 +225,8 @@
   display: flex;
   gap: 12px;
   padding: 16px 24px;
-  border-top: 1px solid #eee;
-  background-color: #f8f9fa;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--bg-light);
 }
 
 .btn-cancel,

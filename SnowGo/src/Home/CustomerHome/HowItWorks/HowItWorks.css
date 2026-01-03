@@ -1,12 +1,12 @@
 /* How It Works */
 .how-it-works {
   padding: 5rem 2rem;
-  background: white;
+  background: var(--bg-white);
 }
 
 .how-it-works h2 {
   font-size: 2.5rem;
-  color: #333;
+  color: var(--text-dark);
   text-align: center;
   margin-bottom: 3rem;
 }
@@ -20,14 +20,14 @@
 }
 
 .tab-content {
-  background: #f8f9fa;
+  background: var(--bg-light);
   padding: 2rem;
   border-radius: 12px;
 }
 
 .tab-title {
   font-size: 1.5rem;
-  color: #333;
+  color: var(--text-dark);
   margin-bottom: 2rem;
   text-align: center;
 }
@@ -39,7 +39,7 @@
 }
 
 .step {
-  background: white;
+  background: var(--bg-white);
   padding: 1.5rem;
   border-radius: 8px;
   display: flex;
@@ -63,12 +63,12 @@
 
 .step h4 {
   font-size: 1.1rem;
-  color: #333;
+  color: var(--text-dark);
   margin-bottom: 0.3rem;
 }
 
 .step p {
-  color: #666;
+  color: var(--text-gray);
   font-size: 0.9rem;
 }
 

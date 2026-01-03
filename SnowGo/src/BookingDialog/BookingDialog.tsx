@@ -187,9 +187,7 @@ export default function BookingDialog({
                 />
               </div>
             </div>
-          </div>
-
-          <div className="form-section">
+            
             <h2>Service Details</h2>
 
             <div className="form-row">

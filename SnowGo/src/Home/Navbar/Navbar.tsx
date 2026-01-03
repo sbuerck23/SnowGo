@@ -17,6 +17,13 @@ function Navbar({ username, onLogout }: NavbarProps) {
           <button className="logout-btn" onClick={onLogout}>
             Logout
           </button>
+          <button 
+            className="settings-btn" 
+            onClick={() => navigate("/settings")}
+            title="Settings"
+          >
+            ⚙️
+          </button>
         </div>
       </nav>
     );
@@ -32,6 +39,13 @@ function Navbar({ username, onLogout }: NavbarProps) {
         <button className="logout-btn" onClick={() => navigate("/signup")}>
           Sign Up
         </button>
+        <button 
+            className="settings-btn" 
+            onClick={() => navigate("/settings")}
+            title="Settings"
+          >
+            ⚙️
+          </button>
       </div>
     </nav>
   );

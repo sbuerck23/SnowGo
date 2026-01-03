@@ -31,7 +31,7 @@ export default function ProtectedRoute({
 
   // Show nothing while checking auth state
   if (isAuthenticated === null) {
-    return <div>Loading...</div>;
+    return <div>Loading... If this takes longer than a few seconds, please reload the page.</div>;
   }
 
   // If requireAuth is false, allow unauthenticated access

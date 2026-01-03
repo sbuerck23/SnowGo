@@ -116,7 +116,7 @@
 
 .accepted-jobs-section h2 {
   font-size: 1.8rem;
-  color: #333;
+  color: var(--text-dark);
   margin-bottom: 24px;
   font-weight: 600;
 }
@@ -129,7 +129,7 @@
 }
 
 .job-tile {
-  background: white;
+  background: var(--bg-white);
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -154,7 +154,7 @@
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #333;
+  color: var(--text-dark);
   flex: 1;
 }
 
@@ -177,7 +177,7 @@
 
 .job-city {
   margin: 0;
-  color: #666;
+  color: var(--text-gray);
   font-size: 0.9rem;
 }
 
@@ -189,13 +189,13 @@
 }
 
 .detail-label {
-  color: #666;
+  color: var(--text-gray);
   min-width: 70px;
   font-weight: 500;
 }
 
 .detail-value {
-  color: #333;
+  color: var(--text-dark);
   font-weight: 600;
   flex: 1;
 }

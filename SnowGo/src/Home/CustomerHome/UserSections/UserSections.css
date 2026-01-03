@@ -13,22 +13,22 @@
 }
 
 .customer-section {
-  background: #f8f9fa;
+  background: var(--bg-light);
 }
 
 .shoveler-section {
-  background: white;
+  background: var(--bg-white);
 }
 
 .section-text h2 {
   font-size: 2.2rem;
-  color: #333;
+  color: var(--text-dark);
   margin-bottom: 1rem;
 }
 
 .section-text > p {
   font-size: 1.1rem;
-  color: #666;
+  color: var(--text-gray);
   margin-bottom: 2rem;
   line-height: 1.6;
 }
@@ -45,7 +45,7 @@
   align-items: center;
   gap: 1rem;
   font-size: 1rem;
-  color: #333;
+  color: var(--text-dark);
 }
 
 .point-icon {
@@ -87,12 +87,12 @@
 }
 
 .btn-primary {
-  background-color: white;
+  background-color: var(--bg-white);
   color: var(--primary-color);
 }
 
 .btn-primary:hover {
-  background-color: #f0f0f0;
+  background-color: var(--bg-light);
   transform: translateY(-3px);
   box-shadow: var(--shadow-xl);
 }

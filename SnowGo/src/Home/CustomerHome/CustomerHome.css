@@ -27,14 +27,14 @@
 .btn-large {
   padding: 18px 48px;
   font-size: 1.2rem;
-  background-color: white;
+  background-color: var(--bg-white);
   color: var(--primary-color);
   display: inline-block;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .btn-large:hover {
-  background-color: #f0f0f0;
+  background-color: var(--bg-light);
   transform: translateY(-4px);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
