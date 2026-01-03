@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { supabase } from "../../utils/supabaseClient";
 import AvailableJobs from "./AvailableJobs/AvailableJobs";
 import YourEarnings from "./YourEarnings/YourEarnings";
@@ -174,7 +175,7 @@ function ShovelerHome({ username, onLogout }: ShovelerHomeProps) {
       );
 
       setSelectedJobForCompletion(null);
-      alert("Job completed successfully! Payment pending.");
+      toast.success("Job completed successfully! Payment pending.");
     } catch (err) {
       console.error("Error completing job:", err);
       throw err;

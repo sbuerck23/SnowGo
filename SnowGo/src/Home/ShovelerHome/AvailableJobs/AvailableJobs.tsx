@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { supabase } from "../../../utils/supabaseClient";
 import {
   GoogleMap,
@@ -100,12 +101,16 @@ function AvailableJobs() {
           }
         );
 
+        console.log("Fetched bookings:", bookings);
+
         if (bookingsError) {
           console.error("Bookings error:", bookingsError);
           throw bookingsError;
         }
+        
+        const pendingJobs = (bookings || []).filter((job: Job) => job.status === "pending");
 
-        setJobs(bookings || []);
+        setJobs(pendingJobs);
 
         // Fetch jobs already accepted by this shoveler
         const { data: acceptances, error: acceptancesError } = await supabase
@@ -156,11 +161,13 @@ function AvailableJobs() {
       if (bookingError) throw bookingError;
 
       // Remove from available jobs list
+      console.log(jobs);
       setJobs((prev) => prev.filter((job) => job.id !== bookingId));
+      console.log(jobs);
       setAcceptedJobs((prev) => new Set(prev).add(bookingId));
     } catch (err) {
       console.error("Error accepting job:", err);
-      alert(err instanceof Error ? err.message : "Failed to accept job");
+      toast.error(err instanceof Error ? err.message : "Failed to accept job");
     }
   };
 

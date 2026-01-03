@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { supabase } from "../../../utils/supabaseClient";
 import CompleteJobPaymentModal from "./CompleteJobPaymentModal/CompleteJobPaymentModal";
+import NotesModal from "../../../utils/NotesModal";
+import ConfirmDialog from "../../../utils/ConfirmDialog";
 import "./CustomerJobs.css";
 
 interface Job {
@@ -34,6 +37,10 @@ function CustomerJobs({ refreshCounter }: CustomerJobsProps) {
   const [selectedJobForPayment, setSelectedJobForPayment] =
     useState<JobWithAcceptance | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [notesModalOpen, setNotesModalOpen] = useState(false);
+  const [selectedNotes, setSelectedNotes] = useState("");
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [jobToDelete, setJobToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCustomerJobs = async () => {
@@ -113,30 +120,33 @@ function CustomerJobs({ refreshCounter }: CustomerJobsProps) {
 
   const handleDeleteJob = async (jobId: string, jobStatus: string) => {
     if (jobStatus !== "pending") {
-      alert("Can only delete pending jobs that haven't been accepted.");
+      toast.error("Can only delete pending jobs that haven't been accepted.");
       return;
     }
 
-    if (
-      !window.confirm(
-        "Are you sure you want to delete this job? This action cannot be undone."
-      )
-    ) {
-      return;
-    }
+    setJobToDelete(jobId);
+    setConfirmDialogOpen(true);
+  };
+
+  const confirmDeleteJob = async () => {
+    if (!jobToDelete) return;
 
     try {
       const { error } = await supabase
         .from("bookings")
         .delete()
-        .eq("id", jobId);
+        .eq("id", jobToDelete);
 
       if (error) throw error;
 
-      setJobs((prev) => prev.filter((job) => job.id !== jobId));
+      setJobs((prev) => prev.filter((job) => job.id !== jobToDelete));
+      toast.success("Job deleted successfully");
     } catch (err) {
       console.error("Error deleting job:", err);
-      alert(err instanceof Error ? err.message : "Failed to delete job");
+      toast.error(err instanceof Error ? err.message : "Failed to delete job");
+    } finally {
+      setConfirmDialogOpen(false);
+      setJobToDelete(null);
     }
   };
 
@@ -198,7 +208,7 @@ function CustomerJobs({ refreshCounter }: CustomerJobsProps) {
       );
 
       setSelectedJobForPayment(null);
-      alert("Payment completed successfully!");
+      toast.success("Payment completed successfully!");
     } catch (err) {
       console.error("Error completing payment:", err);
       throw err;
@@ -333,9 +343,10 @@ function CustomerJobs({ refreshCounter }: CustomerJobsProps) {
                         {job.additional_notes && (
                           <button
                             className="btn-notes"
-                            onClick={() =>
-                              alert(`Notes: ${job.additional_notes}`)
-                            }
+                            onClick={() => {
+                              setSelectedNotes(job.additional_notes);
+                              setNotesModalOpen(true);
+                            }}
                             title="View notes"
                           >
                             Notes
@@ -357,6 +368,29 @@ function CustomerJobs({ refreshCounter }: CustomerJobsProps) {
         onClose={() => setSelectedJobForPayment(null)}
         onSubmit={handleCompletePayment}
         isLoading={isProcessingPayment}
+      />
+
+      <NotesModal
+        isOpen={notesModalOpen}
+        notes={selectedNotes}
+        onClose={() => {
+          setNotesModalOpen(false);
+          setSelectedNotes("");
+        }}
+      />
+
+      <ConfirmDialog
+        isOpen={confirmDialogOpen}
+        title="Delete Job"
+        message="Are you sure you want to delete this job? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+        onConfirm={confirmDeleteJob}
+        onCancel={() => {
+          setConfirmDialogOpen(false);
+          setJobToDelete(null);
+        }}
       />
     </>
   );
